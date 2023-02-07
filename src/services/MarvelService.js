@@ -7,20 +7,15 @@ const useMarvelService = () => {
     const _apiKey = 'apikey=d53bee0b54871c02144f6a81abbfa320';
     const _baseOffset = 0;
 
-/*     getResource = async (url) => {
-        let res = await fetch(url);
-
-        if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-        }
-
-        return await res.json();
-    } */
-
     const getAllCharecters = async (offset = _baseOffset) => {
         const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
         return res.data.results.map(_transformCharacter);
     }
+
+    const getCharacterByName = async (name) => {
+        const res = await request(`${_apiBase}characters?name=${name}&${_apiKey}`);
+        return res.data.results.map(_transformCharacter);
+    } 
 
     const getCharecter = async (id) => {
         const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
@@ -57,10 +52,10 @@ const useMarvelService = () => {
                 thumbnail: comics.thumbnail.path + '.' + comics.thumbnail.extension,
                 pageCount: comics.pageCount ? `${comics.pageCount} pages` : 'There is not information about number of pages',
                 language: comics.textObjects.language || 'en-us',
-                price: comics.prices.price ? `${comics.prices.price}$` : 'not available'
+                price: comics.prices[0].price ? `${comics.prices[0].price}$` : 'not available'
             }
     }
-    return {loading, error, getAllCharecters, getCharecter, clearError, getAllComics, getComics};
+    return {loading, error, getAllCharecters, getCharecter, clearError, getAllComics, getComics, getCharacterByName};
 }
 
 export default useMarvelService;
